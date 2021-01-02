@@ -9,7 +9,7 @@
 
 <h2>Please Login</h2>
 
-<form method="post" th:object="${User}">
+<form th:action="@{/user/login}" th:method="Post" th:object="${User}">
     <label for="username">Username</label>
     <label for="password">Password</label>
     <input type="text" id="username" name="username">

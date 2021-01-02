@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import technicalblog.model.Post;
 import technicalblog.model.User;
+import technicalblog.model.UserProfile;
 import technicalblog.service.PostService;
 import technicalblog.service.UserService;
 
@@ -23,20 +24,27 @@ public class UserController {
 
   @RequestMapping("user/login")
   public String login(){
-    return "user/login";
+    return "/user/login";
   }
+
   @RequestMapping("user/registration")
-  public String registration(){
+  public String registration(Model model){
+    User user=new User();
+    UserProfile userProfile=new UserProfile();
+    user.setProfile(userProfile);
+    model.addAttribute("User",user);
     return "user/registration";
   }
 
   @RequestMapping(value = "user/login", method = RequestMethod.POST)
   public  String userLogin(User user){
+    System.out.println("in Post");
       if(userService.login(user)){
         return "redirect:/posts";
       }
       else{
-        return "user/login";
+        System.out.println("in else");
+        return "/user/login";
       }
 
   }
@@ -51,7 +59,8 @@ public class UserController {
   }
 
   @RequestMapping(value = "user/registration" , method=RequestMethod.POST)
-  public String Userregistration(){
+  public String Userregistration(User user){
+    userService.registerUser(user);
     return "user/login";
   }
 
