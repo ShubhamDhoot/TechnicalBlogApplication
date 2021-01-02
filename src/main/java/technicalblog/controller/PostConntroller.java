@@ -6,9 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import technicalblog.model.Category;
 import technicalblog.model.Post;
+import technicalblog.model.User;
 import technicalblog.service.PostService;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,22 @@ public class PostConntroller {
   }
 
   @RequestMapping(value = "/posts/create", method = RequestMethod.POST)
-  public String createPost(Post newPost){
+  public String createPost(Post newPost, HttpSession session){
+    User user = (User)session.getAttribute("loggeduser");
+    newPost.setUser(user);
+
+    if(newPost.getSpringBlog()!=null){
+      Category springCategory=new Category();
+      springCategory.setCategory(newPost.getSpringBlog());
+      newPost.getCategories().add(springCategory);
+    }
+
+    if(newPost.getJavaBlog()!=null){
+      Category springCategory=new Category();
+      springCategory.setCategory(newPost.getJavaBlog());
+      newPost.getCategories().add(springCategory);
+    }
+
     postService.createPost(newPost);
     return "redirect:/posts";
   }
@@ -45,8 +63,23 @@ public class PostConntroller {
   }
 
   @RequestMapping(value = "/editPost", method = RequestMethod.PUT)
-  public String editPostSubmit(@RequestParam(name="postId") Integer postId, Post updatedPost) {
+  public String editPostSubmit(@RequestParam(name="postId") Integer postId, Post updatedPost, HttpSession session) {
+    User user = (User)session.getAttribute("loggeduser");
+    updatedPost.setUser(user);
    updatedPost.setId(postId);
+
+    if(updatedPost.getSpringBlog()!=null){
+      Category springCategory=new Category();
+      springCategory.setCategory(updatedPost.getSpringBlog());
+      updatedPost.getCategories().add(springCategory);
+    }
+
+    if(updatedPost.getJavaBlog()!=null){
+      Category springCategory=new Category();
+      springCategory.setCategory(updatedPost.getJavaBlog());
+      updatedPost.getCategories().add(springCategory);
+    }
+
    postService.updatePost(updatedPost);
    return "redirect:/posts";
   }
